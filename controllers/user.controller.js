@@ -1,4 +1,5 @@
 const User = require('../models/user.model');
+const Juju = require('../models/juju.model');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -25,7 +26,8 @@ const createUser = async (req, res) => {
     });
     const user = await newUser.save();
     const authToken = jwt.sign(user.id, JWT_SECRET);
-    return res.status(200).send({ user, authToken });
+    const jujus = await Juju.find({ recipientPhoneNumber: user.phoneNumber });
+    return res.status(200).send({ user, authToken, jujus });
   } catch (error) {
     res.status(500).send('Server error. Please check your internet connection');
   }
@@ -49,7 +51,8 @@ const logInUser = async (req, res) => {
     }
 
     const authToken = jwt.sign(user.id, JWT_SECRET);
-    return res.status(200).send({ user, authToken });
+    const jujus = await Juju.find({ recipientPhoneNumber: user.phoneNumber });
+    return res.status(200).send({ user, authToken, jujus });
   } catch (err) {
     res
       .status(500)
@@ -59,6 +62,7 @@ const logInUser = async (req, res) => {
 
 //get user info by token
 const getUserByToken = async (req, res) => {
+  console.log('getting user by token');
   try {
     let user = await User.findOne({ _id: req.user });
     if (!user) {
@@ -67,7 +71,8 @@ const getUserByToken = async (req, res) => {
         .send('Cannot find user. Please try logging in again.');
     }
 
-    return res.status(200).send({ user });
+    const jujus = await Juju.find({ recipientPhoneNumber: user.phoneNumber });
+    return res.status(200).send({ user, jujus });
   } catch (err) {
     res
       .status(500)

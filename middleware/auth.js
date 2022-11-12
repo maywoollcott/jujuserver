@@ -10,10 +10,12 @@ const authenticateToken = (req, res, next) => {
 
   const token = authHeader.split(' ')[1];
 
+  console.log('token is' + token);
+
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
     req.user = decoded;
-    console.log(req.user);
+    console.log('user is ' + req.user);
   } catch (err) {
     return res.status(401).send('Invalid Token');
   }

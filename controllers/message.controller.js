@@ -22,4 +22,16 @@ const createMessage = async (req, res) => {
   }
 };
 
-module.exports = { createMessage };
+const getAllMessages = async (req, res) => {
+  try {
+    const messages = await Message.find();
+    res.status(200).send({ messages });
+  } catch (error) {
+    res.status(500).send({
+      error,
+      message: `Could not successfully fetch messages. See following problems: ${error}`,
+    });
+  }
+};
+
+module.exports = { createMessage, getAllMessages };

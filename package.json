@@ -10,6 +10,7 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.5.4",
     "node-mailjet": "^5.1.1",
+    "twilio": "^3.83.1",
     "validator": "^13.7.0"
   }
 }

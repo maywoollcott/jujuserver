@@ -6,11 +6,19 @@ const JujuSchema = new Schema({
     type: String,
     required: true,
   },
+  message: {
+    type: String,
+    required: true,
+  },
   senderId: {
     type: String,
     required: true,
   },
-  recipientId: {
+  recipientPhoneNumber: {
+    type: String,
+    required: true,
+  },
+  recipientContactName: {
     type: String,
     required: true,
   },
@@ -23,7 +31,7 @@ const JujuSchema = new Schema({
     required: false,
   },
   dateSent: {
-    type: String,
+    type: Number,
     required: true,
   },
 });
