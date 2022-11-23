@@ -1,5 +1,7 @@
 const Juju = require('../models/juju.model');
+const User = require('../models/user.model');
 const { sendJujuText } = require('../smsHandler');
+const { sendPushNotification } = require('../pushNotificationHandler');
 
 const sendJuju = async (req, res) => {
   console.log(req.body);
@@ -9,18 +11,37 @@ const sendJuju = async (req, res) => {
     await juju.save();
     console.log('juju saved');
 
-    //if account doesnt exist send twilio text
-    let resp = await sendJujuText(req.body.recipientPhoneNumber);
+    const recipientAccount = await User.findOne({
+      phoneNumber: juju.recipientPhoneNumber,
+    });
 
-    console.log(res);
-    console.log('successfully sent on server');
-
-    if (resp === 'accepted') {
+    if (recipientAccount) {
+      //if they already have an account send a notification
+      if (recipientAccount.pushNotificationsToken) {
+        //trying to send push
+        setTimeout(() => {
+          sendPushNotification(
+            recipientAccount.pushNotificationsToken,
+            'JUJU',
+            'Someone sent you a juju! Click to read.'
+          );
+        }, '5000');
+      }
       res.status(200).send();
     } else {
-      res.status(404).send({
-        message: 'Could not successfully send text',
-      });
+      //if account doesnt exist send twilio text
+      let resp = await sendJujuText(req.body.recipientPhoneNumber);
+
+      console.log(res);
+      console.log('successfully sent twilio text on server');
+
+      if (resp === 'accepted') {
+        res.status(200).send();
+      } else {
+        res.status(404).send({
+          message: 'Could not successfully send text',
+        });
+      }
     }
   } catch (error) {
     res.status(500).send({

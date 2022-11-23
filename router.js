@@ -14,5 +14,6 @@ router.get('/messages', auth, messageController.getAllMessages);
 router.post('/signup', userController.createUser);
 router.post('/login', userController.logInUser);
 router.get('/userbytoken', auth, userController.getUserByToken);
+router.post('/updateuser', auth, userController.updateUser);
 
 module.exports = router;

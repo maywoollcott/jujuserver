@@ -80,4 +80,23 @@ const getUserByToken = async (req, res) => {
   }
 };
 
-module.exports = { createUser, logInUser, getUserByToken };
+const updateUser = async (req, res) => {
+  console.log('updating user');
+  try {
+    console.log(req.body);
+    const filter = { _id: req.user };
+    const update = req.body.updateObj;
+    const newUser = await User.findOneAndUpdate(filter, update, {
+      new: true,
+    });
+    console.log(newUser);
+    res.status(200).send({ newUser });
+  } catch (error) {
+    res.status(500).send({
+      error,
+      message: `User could not be updated. Problem: ${error}`,
+    });
+  }
+};
+
+module.exports = { createUser, logInUser, getUserByToken, updateUser };

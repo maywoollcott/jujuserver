@@ -22,6 +22,10 @@ const UserSchema = new Schema({
     type: Number,
     required: true,
   },
+  pushNotificationsToken: {
+    type: String,
+    required: false,
+  },
 });
 
 module.exports = mongoose.model('User', UserSchema);
